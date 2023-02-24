@@ -1,0 +1,36 @@
+# it only works if the color is in the middel of the screen
+import cv2 as cv
+import numpy as np
+capture=cv.VideoCapture(0)
+while True:
+    _,frame=capture.read()
+    hsv=cv.cvtColor(frame,cv.COLOR_BGR2HSV)
+    centerpixelx=frame.shape[1]//2
+    centerpixely = frame.shape[0] // 2
+    color='none'
+    print(hsv[centerpixelx][centerpixely])
+    if hsv[centerpixelx][centerpixely][0] <5:
+        color='red'
+    elif hsv[centerpixelx][centerpixely][0]<19:
+        color='orange'
+    elif hsv[centerpixelx][centerpixely][0]<34:
+        color='yellow'
+    elif hsv[centerpixelx][centerpixely][0]<65:
+        color='green'
+    elif hsv[centerpixelx][centerpixely][0]<100:
+        color='light blue'
+    elif hsv[centerpixelx][centerpixely][0]<123:
+        color='dark blue'
+    elif hsv[centerpixelx][centerpixely][0]<153:
+        color='pink'
+
+    cv.circle(frame,(centerpixelx,centerpixely),10,(0,0,0),1)
+    cv.putText(frame,str(color),(10,10),cv.FONT_HERSHEY_PLAIN,1,(0,0,0))
+    cv.imshow('color_detect_window',frame)
+    if cv.waitKey(1) & 0xFF == ord('q'):
+        break
+
+
+cv.waitKey(0)
+cv.release()
+cv.destroyAllWindows()
