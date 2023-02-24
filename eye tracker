@@ -1,0 +1,38 @@
+#to make it work on any vid you change the threshold value and size of the video
+import cv2 as cv
+import numpy as np
+capture=cv.VideoCapture('C:\\Users\\sawa\\Desktop\\eye101.mp4')
+rec_cascade=cv.CascadeClassifier('C:\\Users\\sawa\\Desktop\\rec_eye2.xml')
+
+while True:
+    _,frame=capture.read()
+    frame=frame[70:300,100:280]
+    print(frame.shape)
+    blur = cv.GaussianBlur(frame, (5, 5), 0)
+    gray = cv.cvtColor(blur, cv.COLOR_BGR2GRAY)
+    _,thresh=cv.threshold(gray, 35, 255, cv.THRESH_BINARY_INV)
+    eye_rect = rec_cascade.detectMultiScale(gray, 1.1, minNeighbors=5)
+
+    try:
+        for x,y,w,h in eye_rect:
+            cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 0), 1)
+        contours,hierarchie=cv.findContours(thresh,
+                                           cv.RETR_TREE,
+                                           cv.CHAIN_APPROX_SIMPLE)
+        contours=sorted(contours,key=lambda x: cv.contourArea(x),reverse=True )
+        for contour in contours:
+            cv.drawContours(frame,contour, -1, (0,255,0), 1)
+            break
+
+    except:
+        pass
+
+
+    cv.imshow('eyetracing', frame)
+    cv.imshow('eyetracing_th', thresh)
+    cv.waitKey(20)
+
+
+cv.waitKey(0)
+cv.release()
+cv.destroyAllWindows()
