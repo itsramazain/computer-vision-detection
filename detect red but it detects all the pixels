@@ -1,36 +1,15 @@
 #cant fina a way to make it detect a one contour in each object :)
-# import cv2 as cv
-# import numpy as np
-# cap = cv.VideoCapture(0)
-# while(1):
-#     # Take each frame
-#     _, frame = cap.read()
-#     # Convert BGR to HSV
-#     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-#     # define range of blue color in HSV
-#     lower_blue = np.array([110,50,50])
-#     upper_blue = np.array([130,255,255])
-#     # Threshold the HSV image to get only blue colors
-#     mask = cv.inRange(hsv, lower_blue, upper_blue)
-#     # Bitwise-AND mask and original image
-#     res = cv.bitwise_and(frame,frame, mask= mask)
-#     cv.imshow('frame',frame)
-#     cv.imshow('mask',mask)
-#     cv.imshow('res',res)
-#     k = cv.waitKey(5) & 0xFF
-#     if k == 27:
-#         break
-# cv.destroyAllWindows()
 import cv2 as cv
 import numpy as np
 capture=cv.VideoCapture(0)
 while True:
     _,frame=capture.read()
-    hsv=cv.cvtColor(frame,cv.COLOR_BGR2HSV)
+    blur=cv.GaussianBlur(frame,(5,5),0)
+    hsv=cv.cvtColor(blur,cv.COLOR_BGR2HSV)
     lower_red = np.array([176, 87, 111],np.uint8)
     upper_red = np.array([180, 255, 255],np.uint8)
     mask = cv.inRange(hsv, lower_red, upper_red)
-    res = cv.bitwise_and(frame,frame, mask= mask)#i can treat this as a threshold pic
+    res = cv.bitwise_and(blur,blur, mask= mask)#i can treat this as a threshold pic
     gray=cv.cvtColor(res,cv.COLOR_BGR2GRAY)
     ret, thresh = cv.threshold(gray, 127, 255, 0)
     contours, hierarchy = cv.findContours(thresh,
